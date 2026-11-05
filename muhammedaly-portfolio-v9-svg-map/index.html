@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Muhammedaly — independent creative working across design, film, and code. Home." name="description"/>
+<title>Home — Muhammedaly</title>
+<link href="style.css" rel="stylesheet"/>
+<script defer="" src="script.js"></script>
+</head>
+<body class="intro-active" data-page="home">
+<!-- Cinematic opening screen: JavaScript hides this when the intro finishes. -->
+<div aria-label="Opening portfolio" aria-live="off" class="intro" id="intro" role="status">
+<div class="intro-top"><span>M / STUDIO</span><span>EST. 2026</span></div>
+<div class="intro-center">
+<p class="intro-kicker">WELCOME TO MY WORLD</p>
+<div class="intro-name">MUHAMMEDALY<span class="intro-dot">.</span></div>
+<p class="intro-subtitle">DESIGN <span>—</span> FILM <span>—</span> CODE</p>
+</div>
+<div class="intro-bottom">
+<div class="intro-progress"><div class="intro-progress-track"><div class="intro-progress-fill" id="intro-progress-fill"></div></div><span id="intro-percent">0%</span></div>
+<button class="intro-skip" id="intro-skip" type="button">SKIP INTRO ↗</button>
+</div>
+</div>
+<div aria-hidden="true" class="page-wipe"><span>MUHAMMEDALY /</span></div>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+<a aria-label="Muhammedaly, homepage" class="logo" href="index.html">M<span class="logo-slash">/</span></a>
+<nav aria-label="Main navigation">
+<a data-page="home" href="index.html">Home</a>
+<a data-page="work" href="work.html">Work</a>
+<a data-page="about" href="about.html">About</a>
+<a data-page="contact" href="contact.html">Contact</a>
+</nav>
+<span class="availability"><span class="availability-dot"></span> Available for projects</span>
+</header>
+<main id="main">
+<section aria-labelledby="hero-title" class="hero section" id="home">
+<div class="hero-intro reveal"><span class="eyebrow">Muhammedaly / Independent creative</span><span class="eyebrow">Design · Film · Code</span></div>
+<h1 class="hero-title reveal kinetic" id="hero-title"><span class="hero-word">I MAKE IDEAS</span><br/><em class="hero-word">COME ALIVE.</em></h1>
+<div class="hero-bottom reveal"><p>Creative design, cinematic stories, and digital experiences — all in one place.</p><a aria-label="Explore my work" class="circle-link" href="work.html">↘</a></div><div class="hero-rule"></div></section>
+<section aria-labelledby="intro-heading" class="section split-section reveal"><div><span class="eyebrow">01 / Who I am</span></div><div><h2 class="display-heading" id="intro-heading">One mind. <em>Many mediums.</em></h2><p class="body-large">I'm Muhammedaly, a multidisciplinary creative combining graphic design, video production, photography, and software development. I believe the most memorable work happens when creativity meets curiosity.</p><a class="text-cta" href="about.html">Read more about me ↗</a></div></section>
+<section aria-labelledby="services-title" class="section services-section"><div class="section-heading reveal"><span class="eyebrow">02 / What I can do for you</span><h2 id="services-title">From concept<br/><em>to creation.</em></h2></div><div class="service-rows">
+<div class="service-row reveal"><span>01</span><h3>Branding &amp; Design</h3><p>Visual identities, event creative, posters, digital graphics.</p><span aria-hidden="true">↗</span></div>
+<div class="service-row reveal"><span>02</span><h3>Video Production</h3><p>Camera operation, on-set filming, and lighting for video productions.</p><span aria-hidden="true">↗</span></div>
+<div class="service-row reveal"><span>03</span><h3>Web &amp; Creative Code</h3><p>Responsive websites, motion, and interactive experiences.</p><span aria-hidden="true">↗</span></div>
+</div></section>
+<section aria-labelledby="process-title" class="section process-section"><span class="eyebrow reveal">03 / My process</span><h2 class="display-heading reveal" id="process-title">The way I <em>work.</em></h2><div class="process-grid"><article class="reveal"><span>01 / DISCOVER</span><h3>Listen</h3><p>Learn your story, goals, and audience.</p></article><article class="reveal"><span>02 / EXPLORE</span><h3>Concept</h3><p>Develop a direction and test creative ideas.</p></article><article class="reveal"><span>03 / CREATE</span><h3>Make</h3><p>Design, build, shoot, and refine.</p></article><article class="reveal"><span>04 / DELIVER</span><h3>Launch</h3><p>Prepare the final assets and bring it to life.</p></article></div></section>
+<section aria-labelledby="map-title" class="section map-section"><div class="section-heading reveal"><span class="eyebrow">04 / Where ideas travel</span><h2 id="map-title">Work without<br/><em>boundaries.</em></h2><p>Select a location to view a related project or collaboration.</p></div>
+<div class="location-layout reveal">
+  <div aria-label="Choose a work location" class="location-map" role="group">
+    <img alt="United States map highlighting Seattle, Kirkland, and San Francisco" src="assets/us-map.svg" width="700" height="440"/>
+    <button type="button" aria-label="Seattle, Washington: Elastix AI and Sabbey Data Corporations" aria-pressed="true" class="map-hit active" data-location="seattle" style="--x:11.40%;--y:8.85%"><span class="sr-only">Seattle</span></button>
+    <button type="button" aria-label="Kirkland, Washington: EastSide Business Alliance" aria-pressed="false" class="map-hit" data-location="kirkland" style="--x:13.55%;--y:11.65%"><span class="sr-only">Kirkland</span></button>
+    <button type="button" aria-label="San Francisco, California: Steiger Dynamics" aria-pressed="false" class="map-hit" data-location="san-francisco" style="--x:7.43%;--y:40.91%"><span class="sr-only">San Francisco</span></button>
+  </div>
+  <article aria-live="polite" class="location-preview">
+    <span class="eyebrow">SELECTED LOCATION / <span id="location-index">01</span></span>
+    <div>
+      <h3 id="location-city">Seattle, WA</h3>
+      <p id="location-type">2 companies</p>
+      <div id="location-companies" class="location-companies"><div class="location-company">Elastix AI</div><div class="location-company">Sabbey Data Corporations</div></div>
+      <p id="location-description">Filming and lighting for Elastix AI and Sabbey Data Corporations.</p>
+      <a class="text-cta" href="work.html#video" id="location-link">View my work ↗</a>
+    </div>
+    <span class="preview-caption">Choose a city, then select a company ↗</span>
+  </article>
+</div>
+<p class="map-disclaimer">Seattle · Kirkland · San Francisco. Filming and lighting projects.</p></section>
+<section aria-labelledby="cta-title" class="section home-cta reveal"><span class="eyebrow">05 / Have something in mind?</span><h2 id="cta-title">LET'S MAKE<br/><em>IT REAL.</em></h2><a class="pill-cta" href="contact.html">Start a conversation <span>↗</span></a></section>
+</main>
+<footer class="site-footer"><span>© <span id="year"></span> Muhammedaly</span><a href="index.html">Back to home ↑</a></footer>
+</body>
+</html>
