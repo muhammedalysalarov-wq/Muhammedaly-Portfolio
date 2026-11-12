@@ -43,7 +43,7 @@ header{position:absolute;top:0;left:0;right:0;z-index:40;height:88px;display:fle
 #process .left h2 em{font-style:normal;color:#9b9b9b}
 #process .left .sub{max-width:420px;line-height:1.7;font-size:clamp(14px,1.2vw,17px);margin:32px 0 0;color:#8b8b8b}
 #process .right{position:relative;height:min(80svh,750px);min-height:490px;overflow:visible;isolation:isolate}
-#process .step{position:absolute;top:50%;left:0;width:100%;max-width:560px;min-height:0;margin:0;padding:0;border:0;background:none;transform:translateY(-50%);will-change:transform,opacity,filter;transition:none;pointer-events:none;opacity:1}
+#process .step{position:absolute;top:50%;left:0;width:100%;max-width:560px;min-height:0;margin:0;padding:0;border:0;background:none;transform:translate3d(0,-50%,0);will-change:transform,opacity;transition:none;pointer-events:none;opacity:1;backface-visibility:hidden}
 #process .step-row{display:flex;align-items:baseline;gap:25px}
 #process .step-num{font-size:12px;color:#9cbde8;letter-spacing:.06em;min-width:22px}
 #process .step h3{margin:0;font-size:clamp(2.3rem,3.5vw,4.3rem);font-weight:500;line-height:1.08;letter-spacing:-.06em}
@@ -1065,7 +1065,7 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const loader=document.querySelector('#portfolio-loader');const name=document.querySelector('#loader-name');
 [...'MUHAMMEDALY'].forEach((letter,index)=>{const s=document.createElement('span');s.className='loader-letter';s.style.setProperty('--i',index);s.textContent=letter;s.setAttribute('aria-hidden','true');name.appendChild(s)});const slash=document.createElement('span');slash.className='loader-slash';slash.textContent='/';slash.setAttribute('aria-hidden','true');name.appendChild(slash);
 function playLoader(){if(reduce){loader.remove();document.body.classList.remove('loading');return}loader.classList.remove('play');loader.style.display='flex';void loader.offsetWidth;loader.classList.add('play');document.body.classList.add('loading');const finish=()=>{loader.style.display='none';document.body.classList.remove('loading')};const bottom=loader.querySelector('.loader-panel.bottom');bottom.addEventListener('animationend',finish,{once:true});}
-const routes=['home','work','about','contact','project'];let current='home';function showPage(route,{animateHome=false}={}){if(!routes.includes(route))route='home';if(route===current&&!animateHome)return;current=route;document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+route));document.querySelectorAll('nav [data-route]').forEach(el=>el.classList.toggle('active',el.dataset.route===(route==='project'?'work':route)));document.querySelector('#main-nav').classList.remove('open');document.querySelector('.menu-toggle').setAttribute('aria-expanded','false');window.scrollTo({top:0,behavior:'instant'});document.title=route==='home'?'Muhammedaly — Design, Film & Code':route[0].toUpperCase()+route.slice(1)+' — Muhammedaly';if(animateHome)playLoader();document.querySelectorAll('.reveal').forEach(el=>{if(el.getBoundingClientRect().top<innerHeight)el.classList.add('visible')})}
+const routes=['home','work','about','contact','project'];let current='home';function showPage(route,{animateHome=false}={}){if(!routes.includes(route))route='home';if(route===current&&!animateHome)return;current=route;document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+route));document.querySelectorAll('nav [data-route]').forEach(el=>el.classList.toggle('active',el.dataset.route===(route==='project'?'work':route)));document.querySelector('#main-nav').classList.remove('open');document.querySelector('.menu-toggle').setAttribute('aria-expanded','false');window.scrollTo({top:0,behavior:'instant'});document.title=route==='home'?'Muhammedaly — Design, Film & Code':route[0].toUpperCase()+route.slice(1)+' — Muhammedaly';if(animateHome)playLoader();if(route==='home'&&typeof measureProcess==='function')requestAnimationFrame(measureProcess);document.querySelectorAll('.reveal').forEach(el=>{if(el.getBoundingClientRect().top<innerHeight)el.classList.add('visible')})}
 document.querySelectorAll('[data-route]').forEach(a=>a.addEventListener('click',e=>{const target=a.dataset.route;e.preventDefault();if(target!==current){history.pushState({page:target},'',`#${target}`);showPage(target,{animateHome:target==='home'});}else if(target==='home'){window.scrollTo({top:0,behavior:'smooth'})}}));window.addEventListener('popstate',()=>{const hash=decodeURIComponent(location.hash.slice(1));if(hash.startsWith('project/'))openProject(hash.slice(8),false);else showPage(hash||'home',{animateHome:hash==='home'});});const initial=decodeURIComponent(location.hash.slice(1))||'home';if(initial.startsWith('project/')){ /* detail route opens after case study setup */ }else if(routes.includes(initial)&&initial!=='home')showPage(initial);if(initial==='home'){playLoader()}else{loader.style.display='none';document.body.classList.remove('loading')}
 document.querySelector('.menu-toggle').addEventListener('click',()=>{const n=document.querySelector('#main-nav');const isOpen=n.classList.toggle('open');document.querySelector('.menu-toggle').setAttribute('aria-expanded',String(isOpen))});
 const io=new IntersectionObserver(entries=>entries.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible')}),{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
@@ -1076,29 +1076,48 @@ serviceCards.forEach(card => card.addEventListener('click', () => {
   serviceCards.forEach(item => {item.classList.remove('is-active');item.setAttribute('aria-expanded','false');});
   if(!wasActive){card.classList.add('is-active');card.setAttribute('aria-expanded','true');}
 }));
-// Supplied three-step scroll interpolation.
+// GPU-friendly process scroll: transform + opacity only, with cached geometry.
 const processSection=document.getElementById('process');
 const processSteps=[...processSection.querySelectorAll('.step')];
-let processTicking=false;
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+let processTicking=false, processStart=0, processTravel=1, processEnd=0;
+let processMobile=false, processLastNow=NaN;
+function measureProcess(){
+  if(current!=='home'||!processSection.offsetHeight)return;
+  processStart=processSection.getBoundingClientRect().top+window.scrollY;
+  processTravel=Math.max(1,processSection.offsetHeight-innerHeight);
+  processEnd=processStart+processTravel+innerHeight;
+  processMobile=innerWidth<=780;
+  processLastNow=NaN;
+  requestProcess();
+}
 function drawProcess(){
   processTicking=false;
   if(current!=='home')return;
-  const travel=Math.max(1,processSection.offsetHeight-innerHeight);
-  const pos=clamp(-processSection.getBoundingClientRect().top/travel,0,1);
-  const now=pos*2;
+  const y=window.scrollY;
+  if(y+innerHeight<processStart||y>processEnd)return;
+  const now=clamp((y-processStart)/processTravel,0,1)*2;
+  if(Math.abs(now-processLastNow)<0.002)return;
+  processLastNow=now;
+  const spacing=processMobile?155:215;
   processSteps.forEach((node,i)=>{
-    const distance=i-now,abs=Math.abs(distance),y=distance*(innerWidth<=780?155:215);
-    node.style.transform=`translate3d(0,calc(-50% + ${y}px),0)`;
+    const distance=i-now,abs=Math.abs(distance);
+    node.style.transform=`translate3d(0,calc(-50% + ${distance*spacing}px),0)`;
     node.style.opacity=String(clamp(1-abs*.77,0.06,1));
-    node.style.filter=reduce?'none':`blur(${Math.min(abs*5.8,9)}px)`;
-    node.style.zIndex=String(10-Math.round(abs));
-    node.setAttribute('aria-hidden',abs>.65?'true':'false');
+    const hidden=abs>.65?'true':'false';
+    if(node.getAttribute('aria-hidden')!==hidden)node.setAttribute('aria-hidden',hidden);
   });
 }
-function requestProcess(){if(!processTicking){processTicking=true;requestAnimationFrame(drawProcess)}}
-addEventListener('scroll',requestProcess,{passive:true});addEventListener('resize',requestProcess,{passive:true});
-requestProcess();
+function requestProcess(){
+  if(current!=='home'||processTicking)return;
+  processTicking=true;
+  requestAnimationFrame(drawProcess);
+}
+addEventListener('scroll',requestProcess,{passive:true});
+addEventListener('resize',measureProcess,{passive:true});
+addEventListener('pageshow',measureProcess);
+addEventListener('load',measureProcess);
+requestAnimationFrame(measureProcess);
 </script><script>
 // Interactive city map with projects tied to each real location.
 (()=>{
