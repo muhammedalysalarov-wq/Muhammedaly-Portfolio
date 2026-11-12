@@ -176,7 +176,7 @@ header{position:absolute;top:0;left:0;right:0;z-index:40;height:88px;display:fle
 .boundaries .map-instruction{border:0!important;padding:10px 0 0!important;letter-spacing:.1em!important;font-size:9px!important;color:#888a93!important}
 .boundaries .map-coordinates{display:none}
 .boundaries .map-projects{background:#171b24!important;border:0!important;border-radius:24px!important;min-height:405px;padding:36px 38px!important;box-shadow:none!important;align-self:center}
-.boundaries .map-projects-top{border:0!important;padding:0!important;font-size:10px!important}
+.boundaries .map-projects-top{border:0!important;padding:0!important;font-size:10px!important;justify-content:flex-end}
 .boundaries .map-projects-top span:last-child{color:#78849a}
 .boundaries .map-current-city{padding:36px 0 19px!important}
 .boundaries .map-current-city h3{font-size:clamp(42px,4.3vw,66px)!important;margin:8px 0!important}
@@ -870,7 +870,7 @@ header.shell #main-nav .nav-contact:hover,header.shell #main-nav .nav-contact:fo
 <g aria-label="Kirkland, Washington — view projects" aria-pressed="false" class="map-city" data-city="kirkland" role="button" tabindex="0"><circle class="map-halo" cx="82" cy="50" r="18"></circle><circle class="map-pin-ring" cx="82" cy="50" r="4"></circle><circle class="map-pin" cx="82" cy="50" r="2"></circle><path class="map-leader" d="M82 50 L118 91 L149 91"></path><text class="map-label" x="155" y="95">KIRKLAND</text></g>
 <g aria-label="San Francisco, California — view projects" aria-pressed="false" class="map-city" data-city="sanfrancisco" role="button" tabindex="0"><circle class="map-halo" cx="37" cy="211" r="18"></circle><circle class="map-pin-ring" cx="37" cy="211" r="8"></circle><circle class="map-pin" cx="37" cy="211" r="3.5"></circle><path class="map-leader" d="M37 211 L79 234 L110 234"></path><text class="map-label" x="116" y="238">SAN FRANCISCO</text></g>
 </g></svg></div><div class="map-instruction"><span class="map-coordinates">47.6062° N / 122.3321° W</span></div></div>
-<div aria-live="polite" class="map-projects"><div class="map-projects-top"><span id="project-index"></span><span>PROJECT ARCHIVE</span></div><div class="map-current-city"><span class="map-overline">CURRENT LOCATION</span><h3 id="project-city">Seattle</h3><span class="map-state" id="project-state">WASHINGTON · USA</span></div>
+<div aria-live="polite" class="map-projects"><div class="map-projects-top"><span>PROJECT ARCHIVE</span></div><div class="map-current-city"><span class="map-overline">CURRENT LOCATION</span><h3 id="project-city">Seattle</h3><span class="map-state" id="project-state">WASHINGTON · USA</span></div>
 <div class="map-project-list" id="project-list"><a class="map-project" href="#project/elastix-ai"><span class="map-project-id">01</span><span class="map-project-copy"><strong>Elastix AI</strong><small>Video production · Filming &amp; lighting</small></span></a><a class="map-project" href="#project/sabey-data-centers"><span class="map-project-id">02</span><span class="map-project-copy"><strong>Sabbey Data Centers</strong><small>Video production · Filming &amp; lighting</small></span></a></div>
 <div aria-label="Choose a project location" class="map-city-tabs" role="group"><button aria-pressed="true" class="map-city-tab is-active" data-city="seattle" type="button">Seattle</button><button aria-pressed="false" class="map-city-tab" data-city="kirkland" type="button">Kirkland</button><button aria-pressed="false" class="map-city-tab" data-city="sanfrancisco" type="button">San Francisco</button></div></div></div></section>
 </div>
@@ -1124,9 +1124,9 @@ requestAnimationFrame(measureProcess);
 // Interactive city map with projects tied to each real location.
 (()=>{
 const records={
- seattle:{city:'Seattle',state:'WASHINGTON · USA',index:'01 / 03',coords:'47.6062° N / 122.3321° W',projects:[{name:'Elastix AI',description:'Video production · Filming & lighting',url:'#project/elastix-ai'},{name:'Sabbey Data Centers',description:'Video production · Filming & lighting',url:'#project/sabey-data-centers'}]},
- kirkland:{city:'Kirkland',state:'WASHINGTON · USA',index:'02 / 03',coords:'47.6769° N / 122.2060° W',projects:[{name:'EastSide Business Alliance',description:'Video production · Filming & lighting',url:'#project/eastside-business-alliance'}]},
- sanfrancisco:{city:'San Francisco',state:'CALIFORNIA · USA',index:'03 / 03',coords:'37.7749° N / 122.4194° W',projects:[{name:'Steiger Dynamics',description:'Video production · Filming & lighting',url:'#project/steiger-dynamics'}]}
+ seattle:{city:'Seattle',state:'WASHINGTON · USA',coords:'47.6062° N / 122.3321° W',projects:[{name:'Elastix AI',description:'Video production · Filming & lighting',url:'#project/elastix-ai'},{name:'Sabbey Data Centers',description:'Video production · Filming & lighting',url:'#project/sabey-data-centers'}]},
+ kirkland:{city:'Kirkland',state:'WASHINGTON · USA',coords:'47.6769° N / 122.2060° W',projects:[{name:'EastSide Business Alliance',description:'Video production · Filming & lighting',url:'#project/eastside-business-alliance'}]},
+ sanfrancisco:{city:'San Francisco',state:'CALIFORNIA · USA',coords:'37.7749° N / 122.4194° W',projects:[{name:'Steiger Dynamics',description:'Video production · Filming & lighting',url:'#project/steiger-dynamics'}]}
 };
 const map=document.getElementById('portfolio-us-map');if(!map)return;
 const marks=[...map.querySelectorAll('.map-city')],tabs=[...document.querySelectorAll('.map-city-tab')];
@@ -1134,7 +1134,6 @@ const list=document.getElementById('project-list');
 function choose(city){const data=records[city];if(!data)return;
  document.getElementById('project-city').textContent=data.city;
  document.getElementById('project-state').textContent=data.state;
- document.getElementById('project-index').textContent=data.index;
  const coordinates=document.querySelector('.map-coordinates');if(coordinates)coordinates.textContent=data.coords;
  list.replaceChildren();
  data.projects.forEach((project,i)=>{const item=document.createElement(project.url?'a':'div');item.className='map-project';if(project.url){item.href=project.url;item.addEventListener('click',e=>{e.preventDefault();openProject(project.url.slice('#project/'.length));});}const id=document.createElement('span');id.className='map-project-id';id.textContent=String(i+1).padStart(2,'0');const copy=document.createElement('span');copy.className='map-project-copy';const title=document.createElement('strong');title.textContent=project.name;const detail=document.createElement('small');detail.textContent=project.description;copy.append(title,detail);item.append(id,copy);list.append(item);});
